@@ -1,0 +1,17 @@
+@for $i from 0 through 5 {
+  .h-#{150 + ($i * 150)} {
+    height: #{150 + ($i * 150)}px;
+  }
+}
+
+@for $i from 1 through 1400 {
+  .max-height-#{$i} {
+      max-height: #{$i}px !important;
+  }
+}
+
+@for $i from 1 through 1400 {
+  .min-height-#{$i} {
+      min-height: #{$i}px !important;
+  }
+}

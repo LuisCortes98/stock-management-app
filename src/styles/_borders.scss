@@ -1,0 +1,70 @@
+@for $i from 0 through 30 {
+    .rounded-#{($i * 2)} {
+        border-radius: #{($i * 2)}px !important;
+    }
+}
+
+@for $i from 0 through 30 {
+    .rounded-top-#{($i * 2)} {
+        border-top-left-radius: #{($i * 2)}px !important;
+        border-top-right-radius: #{($i * 2)}px !important;
+    }
+}
+
+@for $i from 0 through 30 {
+    .rounded-bottom-#{($i * 2)} {
+        border-bottom-left-radius: #{($i * 2)}px !important;
+        border-bottom-right-radius: #{($i * 2)}px !important;
+    }
+}
+
+@for $i from 0 through 30 {
+    .rounded-left-#{($i * 2)} {
+        border-top-left-radius: #{($i * 2)}px !important;
+        border-bottom-left-radius: #{($i * 2)}px !important;
+    }
+}
+
+@for $i from 0 through 30 {
+    .rounded-right-#{($i * 2)} {
+        border-top-right-radius: #{($i * 2)}px !important;
+        border-bottom-right-radius: #{($i * 2)}px !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .border-top-#{$i} {
+        border-top: #{$i}px solid !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .border-bottom-#{$i} {
+        border-bottom: #{$i}px solid !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .border-left-#{$i} {
+        border-left: #{$i}px solid !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .border-right-#{$i} {
+        border-right: #{$i}px solid !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .border-#{$i} {
+        border: #{$i}px solid !important;
+    }
+}
+
+@each $color,
+$value in $palette {
+    .border-color-#{$color} {
+        border-color: $value  !important;
+    }
+}

@@ -1,0 +1,23 @@
+@for $i from 0 through 10 {
+    .top-#{($i * 10)} {
+        top: ($i * 10%) !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .right-#{($i * 10)} {
+        right: ($i * 10%) !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .left-#{($i * 10)} {
+        left: ($i * 10%) !important;
+    }
+}
+
+@for $i from 0 through 10 {
+    .bottom-#{($i * 10)} {
+        bottom: ($i * 10%) !important;
+    }
+}

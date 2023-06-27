@@ -1,0 +1,64 @@
+@mixin grid-row-flex {
+        display: flex;
+        flex-direction: row;
+}
+
+@mixin grid-column-flex {
+        display: flex;
+        flex-direction: column;
+}
+
+.row-start {
+        @include grid-row-flex();
+        justify-content: flex-start;
+}
+
+.row-between {
+        @include grid-row-flex();
+        justify-content: space-between;
+}
+
+.row-center {
+        @include grid-row-flex();
+        justify-content: center;
+}
+
+.row-end {
+        @include grid-row-flex();
+        justify-content: flex-end;
+}
+
+.row-strech {
+        @include grid-row-flex();
+        justify-content: stretch;
+}
+
+.row-evenly {
+        @include grid-row-flex();
+        justify-content: space-evenly;
+}
+
+.column-start {
+        @include grid-column-flex();
+        justify-content: flex-start;
+}
+
+.column-between {
+        @include grid-column-flex();
+        justify-content: space-between;
+}
+
+.column-center {
+        @include grid-column-flex();
+        justify-content: center;
+}
+
+.column-end {
+        @include grid-column-flex();
+        justify-content: flex-end;
+}
+
+.column-strech {
+        @include grid-column-flex();
+        justify-content: stretch;
+}

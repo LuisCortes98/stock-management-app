@@ -1,0 +1,41 @@
+@mixin font-ellipsis {
+    overflow: hidden;
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+@for $i from 0 through 31 {
+    .txt-#{2+($i * 2)} {
+        @if $i <=2 {
+            font-size: #{8 + ($i * 2)}pt !important;
+        }
+        @else {
+            font-size: #{8 + $i}pt !important;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    @for $i from 0 through 31 {
+        .txt-#{6+($i * 2)} {
+            font-size: #{6 + (($i * 2) - 1)}pt !important;
+        }
+    }
+}
+
+@media (min-width: 992px) {
+    @for $i from 0 through 31 {
+        .txt-#{6+($i * 2)} {
+            font-size: #{6 + ($i * 2)}pt !important;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    @for $i from 0 through 31 {
+        .txt-#{6+($i * 2)} {
+            font-size: #{6 + (($i * 2) + 2)}pt !important;
+        }
+    }
+}

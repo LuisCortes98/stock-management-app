@@ -1,0 +1,65 @@
+// @font-face {
+//     font-family: "SpaceGrotesk";
+//     src: url(../fonts/SpaceGrotesk.ttf);
+// }
+
+// @font-face {
+//     font-family: "Inter";
+//     src: url(../fonts/Inter.ttf);
+// }
+
+@each $color,
+$value in $palette {
+    .txt-#{$color} {
+        color: $value  !important;
+    }
+}
+
+@each $color,
+$value in $palette {
+    .txt-#{$color}-hover:hover {
+        color: $value  !important;
+    }
+}
+
+// .txt-title {
+//     font-family: "SpaceGrotesk"
+// }
+
+// .txt-phrase {
+//     font-family: "Inter"
+// }
+
+// .txt-bold {
+//     @include font-ellipsis;
+//     font-weight: 900;
+//     cursor: default;
+// }
+
+// .txt-semibold {
+//     @include font-ellipsis;
+//     font-weight: 600;
+//     cursor: default;
+// }
+
+// .txt-medium {
+//     @include font-ellipsis;
+//     font-weight: 500;
+//     cursor: default;
+// }
+
+// .txt-regular {
+//     @include font-ellipsis;
+//     font-weight: 400;
+//     cursor: default;
+// }
+
+// .txt-overflow-unset {
+//     text-overflow: unset;
+// }
+
+// .prevent-select {
+//     -webkit-user-select: none;
+//     -ms-user-select: none;
+//     user-select: none;
+// }

@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles/style.scss';
+
+import 'rsuite/dist/rsuite.min.css';
+
+import { Route, Navigate, Routes, BrowserRouter as Router } from 'react-router-dom';
+
+import { AuthProvider } from './providers/AuthProvider';
+
+import Login from './components/login/Login';
+import Accounts from './components/accounts/Accounts';
+import Stock from './components/stock/Stock';
+import PrivateRoute from './components/login/PrivateRoute';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" exact element={<Login/>} />
+          <Route
+            path="/accounts"
+            element={
+              <PrivateRoute>
+                <Accounts />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/accounts/:accountId/stock"
+            element={
+              <PrivateRoute>
+                <Stock/>
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/accounts" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
