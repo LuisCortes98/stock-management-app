@@ -12,6 +12,9 @@ import { CurrencyFormat } from "../shared/CurrencyFormat";
 import { product as productModel } from "../../forms/Models";
 import { product as productFormStructure } from "../../forms/Structures";
 
+import { PDFDocument } from 'pdf-lib';
+import { saveAs } from 'file-saver';
+
 import { dbFirestore } from "../../firebase-config";
 import { collection, onSnapshot, doc, setDoc, query, where, deleteDoc, updateDoc } from "firebase/firestore";
 
@@ -90,6 +93,27 @@ const Stock = () => {
         }
     }
 
+    const generatePdf = async () => {
+
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage();
+
+        const { height } = page.getSize()
+
+        // Title
+        page.drawText('Inventario', { x: 50, y: height - 40, size: 14 });
+
+        //Items
+        products.forEach((p, index) => {
+            page.drawText(`Nombre: ${p.name} - Cantidad: ${p.quantity}  - Precio: ${p.price} - Descripción: ${p.description}`, { x: 50, y: height - 40 - (index + 1) * 20, size: 10, wordBreaks: ['break-all'] });
+        })
+
+        const pdfBytes = await pdfDoc.save();
+
+        saveAs(new Blob([pdfBytes]), 'stock.pdf');
+
+      };
+
     useEffect(() => {
         if (tableContainerRef.current) {
             setTableHeight(tableContainerRef.current.clientHeight - 35);
@@ -143,11 +167,14 @@ const Stock = () => {
                         <Inventory className="txt-gray-800" sx={{ fontSize: 35 }}/>
                         <h1 className="mx-2 txt-gray-800">Inventario</h1>
                     </div>
-                    <Button appearance="primary" onClick={() => {
-                        setOpenModal(true);
-                        setActionModal('create');
-                        setDefaultFormData(initProductForm);
-                    }}>Agregar producto</Button>
+                    <div className="row-end align-items-center">
+                        <Button appearance="primary" onClick={() => {
+                            setOpenModal(true);
+                            setActionModal('create');
+                            setDefaultFormData(initProductForm);
+                        }}>Agregar producto</Button>
+                        <Button className="ms-3" appearance="ghost" onClick={() => generatePdf()}>Exportar a PDF</Button>
+                    </div>
                 </div>
                 <div ref={tableContainerRef} className="table-data-container w-100 bg-white rounded-16 shadow">
                     <Table

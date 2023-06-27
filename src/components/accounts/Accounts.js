@@ -126,7 +126,7 @@ const Accounts = () => {
     return(
         <Fragment>
             <div className="column-start align-items-start bg-gray-200 py-4 px-4 vh-100 w-100">
-                <div className="col-12 row-between align-items-center">
+                <div className="col-12 mb-2 row-between align-items-center">
                     <div className="row-start align-items-center">
                         <LocationCity className="txt-gray-800" sx={{ fontSize: 35 }}/>
                         <h1 className="mx-2 txt-gray-800">Cuentas</h1>
