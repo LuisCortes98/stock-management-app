@@ -1,10 +1,12 @@
-import React, { useRef, useEffect, useState, Fragment } from "react";
+import React, { useRef, useEffect, useState, Fragment, useCallback } from "react";
 
 import { ArrowBack, Delete, Edit, Inventory } from '@mui/icons-material';
 
 import { Table, Pagination, Tooltip, Whisper, Button } from 'rsuite';
 
 import { useParams, Link } from "react-router-dom";
+
+import { useAuth } from '../../providers/AuthProvider';
 
 import ModalForm from "../shared/ModalForm";
 import { CurrencyFormat } from "../shared/CurrencyFormat";
@@ -16,7 +18,7 @@ import { PDFDocument } from 'pdf-lib';
 import { saveAs } from 'file-saver';
 
 import { dbFirestore } from "../../firebase-config";
-import { collection, onSnapshot, doc, setDoc, query, where, deleteDoc, updateDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, setDoc, query, where, deleteDoc, updateDoc, getDoc } from "firebase/firestore";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -26,7 +28,9 @@ const Stock = () => {
 
     accountId = parseInt(accountId);
 
-    const collectionRef = collection(dbFirestore, 'products')
+    const collectionRef = collection(dbFirestore, 'products');
+
+    const { currentUser } = useAuth();
 
     const tableContainerRef = useRef(null);
 
@@ -49,6 +53,8 @@ const Stock = () => {
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [products, setProducts] = useState([]);
     const [productsTable, setProductsTable] = useState([]);
+
+    const [accountinfo, setAccountInfo] = useState(null);
 
     const handleChangeLimit = dataKey => {
         setPage(1);
@@ -93,6 +99,21 @@ const Stock = () => {
         }
     }
 
+    const getAccount = useCallback(async () => {
+
+        try {
+
+            const accountRef = doc(dbFirestore, "accounts", accountId.toString());
+            const accountSnap = await getDoc(accountRef);
+
+            setAccountInfo(accountSnap.data());
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    }, [accountId]);
+
     const generatePdf = async () => {
 
         const pdfDoc = await PDFDocument.create();
@@ -101,7 +122,7 @@ const Stock = () => {
         const { height } = page.getSize()
 
         // Title
-        page.drawText('Inventario', { x: 50, y: height - 40, size: 14 });
+        page.drawText(`Inventario de ${accountinfo.name}`, { x: 50, y: height - 40, size: 14 });
 
         //Items
         products.forEach((p, index) => {
@@ -110,7 +131,7 @@ const Stock = () => {
 
         const pdfBytes = await pdfDoc.save();
 
-        saveAs(new Blob([pdfBytes]), 'stock.pdf');
+        saveAs(new Blob([pdfBytes]), `inventario de ${accountinfo.name}.pdf`);
 
       };
 
@@ -144,6 +165,10 @@ const Stock = () => {
     }, []);
 
     useEffect(() => {
+        getAccount();
+    }, [getAccount]);
+
+    useEffect(() => {
 
         const dataFilter = products.filter((v, i) => {
             const start = limit * (page - 1);
@@ -165,14 +190,19 @@ const Stock = () => {
                 <div className="col-12 row-between align-items-center my-2">
                     <div className="row-start align-items-center">
                         <Inventory className="txt-gray-800" sx={{ fontSize: 35 }}/>
-                        <h1 className="mx-2 txt-gray-800">Inventario</h1>
+                        <h1 className="mx-2 txt-gray-800">Inventario de {accountinfo?.name}</h1>
                     </div>
                     <div className="row-end align-items-center">
-                        <Button appearance="primary" onClick={() => {
-                            setOpenModal(true);
-                            setActionModal('create');
-                            setDefaultFormData(initProductForm);
-                        }}>Agregar producto</Button>
+                        {
+                            currentUser.role === 'admin' && 
+                                <Button appearance="primary" onClick={() => {
+                                    if (currentUser.role === 'admin') {
+                                        setOpenModal(true);
+                                        setActionModal('create');
+                                        setDefaultFormData(initProductForm);
+                                    }
+                                }}>Agregar producto</Button>
+                        }
                         <Button className="ms-3" appearance="ghost" onClick={() => generatePdf()}>Exportar a PDF</Button>
                     </div>
                 </div>
@@ -185,7 +215,7 @@ const Stock = () => {
                         data={productsTable}
                         loading={loadingProducts}>
 
-                        <Column width={100} verticalAlign="middle">
+                        <Column width={currentUser.role === 'admin' ? 100 : 0} verticalAlign="middle">
                             <HeaderCell></HeaderCell>
                             <Cell>
                                 {rowData => (
@@ -195,9 +225,11 @@ const Stock = () => {
                                             placement="bottom"
                                             speaker={<Tooltip>Editar</Tooltip>}>
                                                 <div onClick={() => {
-                                                    setOpenModal(true);
-                                                    setActionModal('edit');
-                                                    setDefaultFormData(rowData);
+                                                    if (currentUser.role === 'admin'){
+                                                        setOpenModal(true);
+                                                        setActionModal('edit');
+                                                        setDefaultFormData(rowData);
+                                                    }
                                                 }}><Edit className="txt-blue-500-hover txt-gray-500 pe-pointer"/></div>
                                             
                                         </Whisper>
@@ -205,7 +237,7 @@ const Stock = () => {
                                             trigger="hover"
                                             placement="bottom"
                                             speaker={<Tooltip>Eliminar</Tooltip>}>
-                                            <div onClick={() => deleteProduct(rowData.id)}>
+                                            <div onClick={() => currentUser.role === 'admin' && deleteProduct(rowData.id)}>
                                                 <Delete className="txt-blue-500-hover txt-gray-500 pe-pointer"/>
                                             </div>
                                         </Whisper>

@@ -6,6 +6,8 @@ import { Table, Pagination, Tooltip, Whisper, Button } from 'rsuite';
 
 import { Link } from "react-router-dom";
 
+import { useAuth } from '../../providers/AuthProvider';
+
 import ModalForm from "../shared/ModalForm";
 import LogoutButton from "../shared/LogoutButton";
 
@@ -22,6 +24,8 @@ const Accounts = () => {
     const collectionRef = collection(dbFirestore, 'accounts')
 
     const tableContainerRef = useRef(null);
+
+    const { currentUser } = useAuth();
 
     const [tableHeight, setTableHeight] = useState(500);
 
@@ -132,11 +136,14 @@ const Accounts = () => {
                         <h1 className="mx-2 txt-gray-800">Cuentas</h1>
                     </div>
                     <div className="row-end align-items-center">
-                        <Button appearance="primary" className="me-3" onClick={() => {
-                            setOpenModal(true);
-                            setActionModal('create');
-                            setDefaultFormData(initAccountForm);
-                        }}>Crear cuenta</Button>
+                        {
+                            currentUser.role === 'admin' &&
+                                <Button appearance="primary" className="me-3" onClick={() => {
+                                    setOpenModal(true);
+                                    setActionModal('create');
+                                    setDefaultFormData(initAccountForm);
+                                }}>Crear cuenta</Button>
+                        }
                         <LogoutButton/>
                     </div>
                 </div>
@@ -149,7 +156,7 @@ const Accounts = () => {
                         data={accountsTable}
                         loading={loadingAccounts}>
 
-                        <Column width={120} verticalAlign="middle">
+                        <Column width={currentUser.role === 'admin' ? 120 : 0} verticalAlign="middle">
                             <HeaderCell></HeaderCell>
                             <Cell>
                                 {rowData => (
@@ -159,9 +166,11 @@ const Accounts = () => {
                                             placement="bottom"
                                             speaker={<Tooltip>Editar</Tooltip>}>
                                                 <div onClick={() => {
-                                                    setOpenModal(true);
-                                                    setActionModal('edit');
-                                                    setDefaultFormData(rowData);
+                                                    if (currentUser.role === 'admin'){
+                                                        setOpenModal(true);
+                                                        setActionModal('edit');
+                                                        setDefaultFormData(rowData);
+                                                    }
                                                 }}><Edit className="txt-blue-500-hover txt-gray-500 pe-pointer"/></div>
                                             
                                         </Whisper>
@@ -169,7 +178,7 @@ const Accounts = () => {
                                             trigger="hover"
                                             placement="bottom"
                                             speaker={<Tooltip>Eliminar</Tooltip>}>
-                                            <div onClick={() => deleteAccount(rowData.id)}>
+                                            <div onClick={() => currentUser.role === 'admin' && deleteAccount(rowData.id)}>
                                                 <Delete className="txt-blue-500-hover txt-gray-500 pe-pointer"/>
                                             </div>
                                         </Whisper>
