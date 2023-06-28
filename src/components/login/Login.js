@@ -47,7 +47,7 @@ const Login = () => {
         currentUser ? 
             <Navigate to='/'/> :
             <section className="column-center align-items-center bg-blue-gradient w-100 vh-100">
-                <div className="col-5 column-center align-items-center bg-white rounded-16 shadow h-75">
+                <div className="col-11 col-md-5 column-center align-items-center bg-white rounded-16 shadow h-75">
                     <h1 className="mb-4 txt-gray-800">StockMaster</h1>
                     <Form model={model} onSubmit={loginHandler} onChange={(value) => setFormValue(value)} layout="vertical">
                         <Form.Group controlId="email">
